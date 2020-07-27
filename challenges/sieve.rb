@@ -36,48 +36,30 @@
 # input limit
 # - Must use explained algorithm
 
-# Approach: See given algorithm
+# Approach:
+# 1 - Create an array of all numbers from 2 to limit.
+# 2 - Delete numbers that are multiples of first element of array.
+#     (select numbers that are not multiples)
+# 3 - Select next number in array.
+# 4 - Repeat step 2 until number whose multiple we are deleting is
+# greater than limit
 
 class Sieve
   def initialize(limit)
     @limit = limit
-    @non_primes = []
-    @primes = [2]
+    @list = (2..limit).to_a
   end
 
   def primes
-    catch :stop do
-      loop do
-        mark_multiples_as_nonprimes
-        determine_next_prime
-      end
-    end
-    @primes
-  end
-
-  def mark_multiples_as_nonprimes
-    factor = 2
+    return [] if @limit < 2
+    base = 2
     loop do
-      non_prime = @primes.last * factor
-      puts "@primes.last: #{@primes.last}"
-      puts "factor: #{factor}"
-      puts "non_prime: #{non_prime}"
-      break if non_prime > @limit
-      @non_primes << non_prime
-      factor += 1
+      @list = @list.select { |element| element == base ||
+                            element % base != 0 }
+      next_index = @list.index(base) + 1
+      break if next_index == @list.size
+      base = @list[next_index]
     end
-  end
-
-  def determine_next_prime
-    count = 0
-    loop do
-      count += 1
-      candidate = @primes.last + count
-      throw :stop if candidate > @limit
-      next if @non_primes.include? candidate
-      @primes << candidate
-      puts "#{candidate} added to primes"
-      break
-    end
+    @list
   end
 end
