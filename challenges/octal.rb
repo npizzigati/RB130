@@ -53,9 +53,11 @@ class Octal
 
   def to_decimal
     return 0 unless @octal_string.match?(/^\d+$/)
+
     digits = @octal_string.to_i.digits
     result = 0
     digits.each_with_index do |digit, index|
+      return 0 if digit > 7
       result += digit * (8**index)
     end
     @negative ? -result : result
