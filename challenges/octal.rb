@@ -42,36 +42,29 @@
 # products.
 
 class Octal
-  def initialize(octal)
-    @octal_string = octal.to_s
-    if @octal_string.match?(/^-\d+$/)
-      @negative = true
-      puts @negative
-      @octal_string.sub!('-', '')
-    end
+  def initialize(octal_string)
+    @octal_string = octal_string
   end
 
   def to_decimal
-    return 0 unless @octal_string.match?(/^\d+$/)
-
-    digits = @octal_string.to_i.digits
+    return 0 if not_a_number?
+    
+    digits = @octal_string.to_i.abs.digits
     result = 0
     digits.each_with_index do |digit, index|
-      return 0 if digit > 7
+      break if digit > 7
+
       result += digit * (8**index)
     end
-    @negative ? -result : result
+    negative? ? -result : result
+  end
+
+  def not_a_number?
+    @octal_string !~ /^-?\d+$/
+  end
+
+  def negative?
+    @octal_string.start_with? == '-'
   end
 end
 
-#   233 # decimal
-# = 2*10^2 + 3*10^1 + 3*10^0
-# = 2*100  + 3*10   + 3*1
-# Octal is similar, but uses powers of 8 rather than powers of
-# 10. So:
-
-#   233 # octal
-# = 2*8^2 + 3*8^1 + 3*8^0
-# = 2*64  + 3*8   + 3*1
-# = 128   + 24    + 3
-# = 155
