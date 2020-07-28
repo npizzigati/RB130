@@ -35,12 +35,17 @@ Iterate over each integer in range from min argument to limit
 add to a list. At end of iteration, take sum of range.
 
 =end
-module Calculations
-  def self.sum_multiples(factors, limit)
+
+class SumOfMultiples
+  def initialize(*factors)
+    @factors = factors
+  end
+
+  def self.to(factors = [3, 5], limit)
     multiples = []
 
     factors.min.upto(limit - 1) do |index|
-      multiples << index if self.is_multiple?(index, factors)
+      multiples << index if is_multiple?(index, factors)
     end
 
     multiples.sum
@@ -53,18 +58,8 @@ module Calculations
 
     false
   end
-end
-
-class SumOfMultiples
-  def initialize(*factors)
-    @factors = factors
-  end
-
-  def self.to(limit)
-    Calculations.sum_multiples([3, 5], limit)
-  end
 
   def to(limit)
-    Calculations.sum_multiples(@factors, limit)
+    self.class.to(@factors, limit)
   end
 end
