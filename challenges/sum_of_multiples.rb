@@ -42,10 +42,8 @@ class SumOfMultiples
   end
 
   def self.to(factors = [3, 5], limit)
-    multiples = []
-
-    factors.min.upto(limit - 1) do |index|
-      multiples << index if is_multiple?(index, factors)
+    multiples = (factors.min...limit).select do |number|
+      is_multiple?(number, factors)
     end
 
     multiples.sum
