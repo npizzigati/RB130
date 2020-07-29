@@ -32,18 +32,21 @@
 # **** of each of the same elements.
 # New approach: Order arrays. Compare size and then compare using ==.
 # Add condition that same words are not anagrams
+# Challenge -- implement without using sort.
+# Approach: Count letters in each word. Each word should have the
+# same letters in the same quantities.
 
 class Anagram
   def initialize(original_word)
     @original_word = original_word
-    @converted_word = original_word.downcase.chars.sort
+    @converted_word = original_word.downcase
     @target_size = @converted_word.size
   end
 
   def match(candidates)
     results = []
     candidates.each do |candidate|
-      if same_size?(candidate) && same_letters?(candidate) && not_same_word?(candidate)
+      if anagram?(candidate)
         results << candidate
       end
     end
@@ -52,15 +55,23 @@ class Anagram
 
   private
 
-  def same_size?(candidate) 
-    candidate.size == @target_size
+  def anagram?(candidate)
+    return false if not_same_size?(candidate) || same_word?(candidate)
+    has_same_letters?(candidate)
   end
 
-  def same_letters?(candidate)
-    @converted_word == candidate.downcase.chars.sort
+  def has_same_letters?(candidate)
+    candidate = candidate.downcase
+    candidate.chars.uniq.all? do |char|
+      candidate.count(char) == @converted_word.count(char)
+    end
   end
 
-  def not_same_word?(candidate)
-    candidate.downcase != @original_word.downcase
+  def not_same_size?(candidate)
+    candidate.size != @target_size
+  end
+
+  def same_word?(candidate)
+    candidate.downcase == @converted_word
   end
 end
