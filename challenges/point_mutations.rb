@@ -57,21 +57,8 @@ class DNA
   end
 
   def hamming_distance(strand2)
-    nstrand1, nstrand2 = normalize_strands(strand2)
-    zipped_strands = nstrand1.chars.zip(nstrand2.chars)
-    zipped_strands.count { |pair| pair.uniq.size == 2 }
+    zipped_strands = @strand1.chars.zip(strand2.chars)
+    zipped_strands.count { |pair| pair.uniq.size == 2 && !pair.include?(nil) }
   end
 
-  def normalize_strands(strand2)
-    nstrand1 = @strand1
-    nstrand2 = strand2
-    size1 = nstrand1.size
-    size2 = nstrand2.size
-    if size1 > size2
-      nstrand1 = @strand1[0...size2]
-    elsif size2 > size1
-      nstrand2 = strand2[0...size1]
-    end
-    [nstrand1, nstrand2]
-  end
 end
