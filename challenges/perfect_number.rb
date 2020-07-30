@@ -51,21 +51,25 @@ class PerfectNumber
 
     case factors.sum
     when number
-      "perfect"
+      'perfect'
     when ((number + 1)...)
-      "abundant"
-    when (1...number)
-      "deficient"
+      'abundant'
+    else
+      'deficient'
     end
   end
 
   def self.calculate_factors(number)
-    factors = []
-    1.upto(number / 2) do |i|
-      factors << i if (number % i).zero?
-    end
-    factors
+    (1..(number / 2)).select { |i| (number % i).zero? }
   end
+
+  # def self.calculate_factors(number)
+  #   factors = []
+  #   1.upto(number / 2) do |i|
+  #     factors << i if (number % i).zero?
+  #   end
+  #   factors
+  # end
 
   def self.invalid?(number)
     number < 1 || number.to_i != number
