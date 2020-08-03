@@ -39,27 +39,25 @@
 #    from input
 #  if input < key, do nothing
 
-HANDSHAKE_TABLE = { 0b00001 => 'wink',
-                    0b00010 => 'double blink',
-                    0b00100 => 'close your eyes',
-                    0b01000 => 'jump',
-                    0b10000 => 'reverse' }
+# Version 2, using bit mask
+
+HANDSHAKES = { 0b00001 => 'wink',
+               0b00010 => 'double blink',
+               0b00100 => 'close your eyes',
+               0b01000 => 'jump' }
+REVERSE =      0b10000
 
 class SecretHandshake
   def initialize(input)
     @number = input.to_i
-    @handshake_keys = HANDSHAKE_TABLE.keys.sort { |a, b| b <=> a }
   end
 
   def commands
     results = []
-    @handshake_keys.each do |key|
-      if key <= @number
-        results.unshift HANDSHAKE_TABLE[key]
-        break if key == @number
-        @number -= key
-      end
+    HANDSHAKES.each do |key, value|
+      results << value if key & @number > 0
     end
-    results[-1] == 'reverse' ? results[0..-2].reverse : results
+
+    REVERSE & @number > 0 ? results.reverse : results
   end
 end
