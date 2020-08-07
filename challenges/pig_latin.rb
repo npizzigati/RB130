@@ -35,14 +35,14 @@
 # group. Move matching group to end of word and add 'ay'
 
 class PigLatin
-  VOWEL_STARTS = /^[aeiou]|[xy][^aeiou]/
-  CONSONANT_STARTS = /^[^aeiou]*qu|^[^aeiou]{1,3}/
+  VOWEL_SOUND = /^[aeiou]|[xy][^aeiou]/
+  CONSONANT_SOUND = /^[^aeiou]*qu|^[^aeiou]{1,3}/
 
   def self.translate(phrase)
     phrase.split(' ').map do |word| 
-      return word + 'ay' if VOWEL_STARTS =~ word
-      leader = (CONSONANT_STARTS.match(word))[0]
-      word.gsub(CONSONANT_STARTS, '') + leader + 'ay'
+      return word + 'ay' if VOWEL_SOUND =~ word
+      leader = word.slice!(CONSONANT_SOUND)
+      word + leader + 'ay'
     end.join(' ')
   end
 end
