@@ -65,33 +65,27 @@
 class InvalidCodonError < StandardError; end
 
 class Translation
-  NUCLEOTIDES = { /AUG/ => 'Methionine',
-                  /UU[UC]/ => 'Phenylalanine',
-                  /UU[GA]/ => 'Leucine',
-                  /UC[UCAG]/ => 'Serine',
-                  /UA[UC]/ => 'Tyrosine',
-                  /UG[UC]/ => 'Cysteine',
-                  /UGG/ => 'Tryptophan' }
+  SEQUENCES = {/AUG/ => 'Methionine',
+               /UU[UC]/ => 'Phenylalanine',
+               /UU[GA]/ => 'Leucine',
+               /UC[UCAG]/ => 'Serine',
+               /UA[UC]/ => 'Tyrosine',
+               /UG[UC]/ => 'Cysteine',
+               /UGG/ => 'Tryptophan',
+               /UAA|UAG|UGA/ => 'STOP'}
 
-  STOPS = ['UAA', 'UAG', 'UGA']
   CODON_LENGTH = 3
 
   def self.of_codon(codon)
-    return 'STOP' if STOPS.include?(codon)
-    NUCLEOTIDES.each do |k, v|
-      return v if k =~ codon
-    end
-    raise InvalidCodonError
+    codon = SEQUENCES.select { |k, _| k =~ codon }.values.first
+    raise InvalidCodonError if codon.nil?
+    codon
   end
 
   def self.of_rna(strand)
-    translations = []
-    while strand.size >= CODON_LENGTH
-      codon = strand.slice!(0..CODON_LENGTH - 1)
-      break if of_codon(codon) == 'STOP'
-      translations << of_codon(codon)
-    end
-    translations
+    codons = strand.scan(/.{#{CODON_LENGTH}}/)
+    codons.map { |codon| of_codon(codon) }
+          .take_while { |codon| codon != 'STOP' }
   end
 
 end
