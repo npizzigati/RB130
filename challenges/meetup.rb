@@ -46,7 +46,6 @@
 require 'date'
 
 class Meetup
-  DAYS_IN_WEEK = 7
 
   def initialize(month, year)
     @month = month
@@ -54,58 +53,28 @@ class Meetup
   end
 
   def day(target_day_name, target_ordinal)
-    first_candidate = calculate_candidate(target_day_name, :first)
+    candidates = calculate_candidates(target_day_name)
     case target_ordinal
     when :first
-      first_candidate
+      candidates[0]
     when :second
-      first_candidate + DAYS_IN_WEEK
+      candidates[1]
     when :third
-      first_candidate + DAYS_IN_WEEK * 2
+      candidates[2]
     when :fourth
-      first_candidate + DAYS_IN_WEEK * 3
+      candidates[3]
     when :last
-      calculate_last_candidate(target_day_name)
+      candidates[-1]
     when :teenth
-      calculate_candidate(target_day_name, :teenth)
+      candidates.select { |date| date.mday.between?(13, 19) }.first
     end
   end
 
-  def calculate_candidate(target_day_name, target_ordinal)
-    first_search_day = case target_ordinal
-                       when :first
-                         1
-                       when :teenth
-                         13
-                       end
-    candidate_date = Date.new(@year, @month, first_search_day)
-
-    loop do
-      return candidate_date if matches?(candidate_date, target_day_name)
-      candidate_date = candidate_date.next_day
+  def calculate_candidates(target_day_name)
+    first_day = Date.new(@year, @month, 1)
+    last_day = Date.new(@year, @month, -1)
+    first_day.upto(last_day).select do |date| 
+      Date::DAYNAMES[date.wday] == target_day_name.to_s.capitalize
     end
-  end
-
-  def calculate_last_candidate(target_day_name)
-    last_day_of_month = calculate_last_day_of_month
-    candidate_date = Date.new(@year, @month, last_day_of_month)
-
-    loop do
-      return candidate_date if matches?(candidate_date, target_day_name)
-      candidate_date = candidate_date.prev_day
-    end
-  end
-
-  def calculate_last_day_of_month
-    candidate_date = Date.new(@year, @month, 28)
-    loop do
-      break if candidate_date.next_day.month != @month 
-      candidate_date = candidate_date.next_day
-    end
-    candidate_date.day
-  end
-
-  def matches?(candidate_date, target_day_name)
-    Date::DAYNAMES[candidate_date.wday].downcase == target_day_name.to_s
   end
 end
