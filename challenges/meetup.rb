@@ -52,9 +52,9 @@ class Meetup
     @year = year
   end
 
-  def day(target_day_name, target_ordinal)
-    candidates = calculate_candidates(target_day_name)
-    case target_ordinal
+  def day(target_day_name, target_schedule)
+    candidates = build_candidate_array(target_day_name)
+    case target_schedule
     when :first
       candidates[0]
     when :second
@@ -66,11 +66,11 @@ class Meetup
     when :last
       candidates[-1]
     when :teenth
-      candidates.select { |date| date.mday.between?(13, 19) }.first
+      candidates.detect { |date| date.mday.between?(13, 19) }
     end
   end
 
-  def calculate_candidates(target_day_name)
+  def build_candidate_array(target_day_name)
     first_day = Date.new(@year, @month, 1)
     last_day = Date.new(@year, @month, -1)
     first_day.upto(last_day).select do |date| 
