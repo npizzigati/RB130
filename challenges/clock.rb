@@ -23,13 +23,13 @@ class Clock
     new(hours, minutes)
   end
 
-  def +(other)
-    new_minutes = (@minutes + other) % MINUTES_IN_DAY
+  def +(addend)
+    new_minutes = (@minutes + addend) % MINUTES_IN_DAY
     self.class.new(0, new_minutes)
   end
 
-  def -(other)
-    new_minutes = @minutes - other
+  def -(subtrahend)
+    new_minutes = @minutes - subtrahend
     new_minutes += MINUTES_IN_DAY until new_minutes > 0
     self.class.new(0, new_minutes)
   end
