@@ -35,19 +35,17 @@
 # palindrome(string)
 # Approach: reverse is the same as forwards
 
+Largest = Struct.new(:value, :factors)
+Smallest = Struct.new(:value, :factors)
 
 class Palindromes
   def initialize(max_factor:, min_factor: 1)
     @range = min_factor..max_factor
     @palindrome_products = Hash.new { |hash, key| hash[key] = []}
-    @largest = nil
-    @smallest = nil
   end
 
   def generate
     numbers = @range.to_a
-    # combos do not contain twin pairs, e.g., [3, 3], so these
-    # must be added separately
     candidate_combos = numbers.combination(2) + build_twins(numbers)
     candidate_combos.each do |combo|
       product = combo.first * combo.last
@@ -57,40 +55,14 @@ class Palindromes
 
   def largest
     largest_palindrome = [@palindrome_products.max].to_h
-    @largest = Largest.new(largest_palindrome)
+    Largest.new(largest_palindrome.keys.first,
+                largest_palindrome.values.first)
   end
 
   def smallest
     smallest_palindrome = [@palindrome_products.min].to_h
-    @smallest = Smallest.new(smallest_palindrome)
-  end
-
-  class Largest
-    def initialize(largest_palindrome)
-      @largest_palindrome = largest_palindrome
-    end
-
-    def value
-      @largest_palindrome.keys.first
-    end
-
-    def factors
-      @largest_palindrome.values.first
-    end
-  end
-
-  class Smallest
-    def initialize(smallest_palindrome)
-      @smallest_palindrome = smallest_palindrome
-    end
-
-    def value
-      @smallest_palindrome.keys.first
-    end
-
-    def factors
-      @smallest_palindrome.values.first
-    end
+    Smallest.new(smallest_palindrome.keys.first,
+                 smallest_palindrome.values.first)
   end
 
   private
