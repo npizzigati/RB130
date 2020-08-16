@@ -46,7 +46,7 @@ class Palindromes
 
   def generate
     numbers = @range.to_a
-    candidate_combos = numbers.combination(2) + build_twins(numbers)
+    candidate_combos = numbers.repeated_combination(2)
     candidate_combos.each do |combo|
       product = combo.first * combo.last
       @palindrome_products[product] << combo if palindrome?(product)
@@ -71,9 +71,4 @@ class Palindromes
     product_string = product.to_s
     product_string == product_string.reverse
   end
-
-  def build_twins(numbers)
-    numbers.map { |number| [number, number] }
-  end
-
 end
