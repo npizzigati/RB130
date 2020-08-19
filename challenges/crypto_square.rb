@@ -104,10 +104,7 @@ class Crypto
   end
 
   def build_plaintext_segments
-    regular_segments = plaintext.scan(/.{#{size}}/)
-    hang_size = plaintext.size - regular_segments.join.size
-    regular_segments << plaintext[-hang_size..-1] unless hang_size.zero?
-    regular_segments
+    plaintext.chars.each_slice(size).map(&:join)
   end
 
   def build_cipher_words
