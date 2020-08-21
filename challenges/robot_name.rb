@@ -40,8 +40,8 @@ class Robot
     candidate = nil
 
     loop do
-      letter_part = ('A'..'Z').to_a.sample(2)
-      number_part = (0..9).to_a.sample(3)
+      letter_part = Array.new(2).map { ('A'..'Z').to_a.sample }
+      number_part = Array.new(3).map { (0..9).to_a.sample }
       candidate = (letter_part + number_part).join
       break unless @@names_used.include?(candidate)
     end
