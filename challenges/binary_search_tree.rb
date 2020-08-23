@@ -89,7 +89,7 @@ class Bst
         yield(item)
       end
     else
-      items.each
+      items.to_enum
     end
   end
 
