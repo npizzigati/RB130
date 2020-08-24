@@ -48,55 +48,59 @@
 # Convert list to array
 
 class SimpleLinkedList
-  def initialize(list = [])
-    @list = []
-    unless list.empty? || list.nil?
-      list.reverse.each do |datum|
-        push(datum)
-      end
-    end
+  attr_accessor :head
+
+  def initialize
+    @head = nil
   end
 
-  def self.from_a(object)
-    if object.nil? || object.empty?
-      new
-    else
-      new(object)
+  def self.from_a(array)
+    list = SimpleLinkedList.new
+    array&.reverse&.each do |datum|
+      list.push(datum)
     end
+    list
   end
 
   def to_a
-    @list.map { |element| element.datum }.reverse
+    array = []
+    array << pop until empty?
+    array
   end
 
   def reverse
-    self.class.new(self.to_a.reverse)
+    new_list = SimpleLinkedList.new
+    new_list.push(pop) until empty?
+    new_list
   end
 
   def size
-    @list.size
+    count = 0
+    walker = @head
+    while walker
+      count += 1
+      walker = walker.next
+    end
+    count
   end
 
   def empty?
-    @list.empty?
+    head.nil?
   end
 
   def push(datum)
-    new_element = Element.new(datum)
-    new_element.next = head unless empty?
-    @list << new_element
+    new_element = Element.new(datum, @head)
+    @head = new_element
   end
 
   def pop
-    @list.pop.datum
+    popped = @head.datum
+    @head = @head.next
+    popped
   end
 
   def peek
-    empty? ? nil : head.datum
-  end
-
-  def head
-    empty? ? nil : @list.last
+    @head.datum if !empty?
   end
 end
 
